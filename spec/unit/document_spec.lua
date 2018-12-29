@@ -72,6 +72,7 @@ describe("EPUB document module", function()
     end)
     it("should register droid sans fallback", function()
         local fonts_registry = {
+            "Dotsies",
             "Droid Sans Mono",
             "FreeSans",
             "FreeSerif",

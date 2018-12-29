@@ -106,11 +106,7 @@ function Kindle:initNetworkManager(NetworkMgr)
 end
 
 function Kindle:supportsScreensaver()
-    if self.isSpecialOffers then
-        return false
-    else
-        return true
-    end
+    return true
 end
 
 function Kindle:setDateTime(year, month, day, hour, min, sec)

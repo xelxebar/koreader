@@ -1,0 +1,37 @@
+install-device: koreader-$(DIST)-$(MACHINE)-$(VERSION).zip
+ifeq ($(strip $(UNZIP_DIR)),)
+	@echo 'UNZIP_DIR not defined.'
+else ifeq ($(strip $(DEST)),)
+	@rmdir $(UNZIP_DIR)
+	@echo 'DEST not defined'
+else
+	unzip $< -d $(UNZIP_DIR)
+	rm -rf $(UNZIP_DIR)/koreader/data/tessdata
+	$(RSYNC) --modify-window=1 \
+	         --update \
+	         --recursive \
+	         --times \
+	         --verbose \
+	         $(UNZIP_DIR)/ $(DEST)/
+	rm -rf $(UNZIP_DIR)
+endif
+
+install-kindle:
+	$(MAKE) DIST=kindle \
+	        MACHINE=arm-kindle5-linux-gnueabi \
+	        RSYNC="rsync $(RSYNC_OPTS)" \
+	        UNZIP_DIR=$(shell mktemp -d 'unzip.XXXXX') \
+	        DEST=$(DEST) \
+	        install-device
+
+install-egan:
+	$(MAKE) DEST=egan.kindle.local:/mnt/base-us \
+	        RSYNC_OPTS="$(RSYNC_OPTS)" \
+	        install-kindle
+
+dry-install-egan:
+	$(MAKE) RSYNC_OPTS="--dry-run" \
+	        install-egan
+
+
+.PHONY: install-device install-kindle install-egan install-egan-dry
